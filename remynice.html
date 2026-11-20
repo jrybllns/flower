@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.7, maximum-scale=1.0, user-scalable=no">
+    <meta name="name" content="remynice">
+    <title>Happy Valentine's Day</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        canvas {
+        position: absolute;
+        left:0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(189, 0, 0, 0.904);
+        }
+
+        #hedlinecontainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 100px;
+        }
+
+        #shine {
+        font-size: 80px;
+        font-weight: bold;
+        font-family: 'Dancing Script';
+        color: rgba(244, 50, 68, 1);
+        z-index: 10;
+        animation: shine 3s infinite;
+        -webkit-animation: shine 3s infinite;
+        text-shadow: 0 0px 10px rgba(233, 85, 189, 0.6);
+        }
+
+        @keyframes shine {
+        0%, 10% {
+            text-shadow: 0 0px 5px rgba(233, 85, 189, 0.3);
+        }
+        50% {
+            text-shadow: 0 0px 20px rgba(233, 85, 189, 0.8), 0 0px 30px rgba(255, 0, 0, 0.6);
+        }
+        100% {
+            text-shadow: 0 0px 5px rgba(233, 85, 189, 0.3);
+        }
+        }
+
+        @-webkit-keyframes shine {
+        0%, 10% {
+            text-shadow: 0 0px 5px rgba(233, 85, 189, 0.3);
+        }
+        50% {
+            text-shadow: 0 0px 20px rgba(233, 85, 189, 0.8), 0 0px 30px rgba(0, 255, 64, 0.6);
+        }
+        100% {
+            text-shadow: 0 0px 5px rgba(85, 233, 105, 0.3);
+        }
+        }
+
+        #button-container {
+        position: fixed;
+        bottom: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 20;
+        opacity: 0;
+        animation: fadeIn 1s ease-in forwards;
+        animation-delay: 4s;
+        }
+
+        @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+        }
+
+        #myButton {
+        padding: 12px 30px;
+        font-size: 18px;
+        font-family: 'Dancing Script', cursive;
+        background: linear-gradient(135deg, #ff1515c2, #fa1e3f79);
+        color: white;
+        border: 2px solid white;
+        border-radius: 25px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+        transition: all 0.3s ease;
+        }
+
+        #myButton:hover {
+        background: linear-gradient(135deg, #93f146c4, #ff6b6b);
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(255, 0, 0, 0.6);
+        }
+
+        #myButton:active {
+        transform: scale(0.98);
+        }
+
+        @media only screen and (max-width: 600px) {
+            #shine {
+            font-size: 50px;
+            }
+            #hedlinecontainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            }
+            #myButton {
+            padding: 10px 30px;
+            font-size: 16px;
+            }
+        }
+    </style>
+  </head>
+  <body>  
+        <div id="hedlinecontainer">
+            <div id="shine"><center>Happy Valentine's Day ❤️</center></div>
+        </div>
+        <div id="button-container">
+            <button id="myButton">🥰 Flower for you bebe →</button>
+        </div>
+        <canvas id="heart"></canvas>
+  </body>
+</html>
+<script>     
+    window.requestAnimationFrame =
+    window.__requestAnimationFrame ||
+        window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        (function () {
+            return function (callback, element) {
+                var lastTime = element.__lastTime;
+                if (lastTime === undefined) {
+                    lastTime = 0;
+                }
+                var currTime = Date.now();
+                var timeToCall = Math.max(1, 33 - (currTime - lastTime));
+                window.setTimeout(callback, timeToCall);
+                element.__lastTime = currTime + timeToCall;
+            };
+        })();
+    window.isDevice = 
+    (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(((navigator.userAgent 
+        || navigator.vendor || window.opera)).toLowerCase()));
+    var loaded = false;
+    var init = function () {
+    if (loaded) return;
+    loaded = true;
+    var mobile = window.isDevice;
+    var koef = mobile ? 1 : 1;
+    var canvas = document.getElementById('heart');
+    var ctx = canvas.getContext('2d');
+    var width = canvas.width = koef * innerWidth;
+    var height = canvas.height = koef * innerHeight;
+    var rand = Math.random;
+    ctx.fillStyle = "rgba(0,0,0,1)";
+    ctx.fillRect(0, 0, width, height);
+
+    var heartPosition = function (rad) {
+        //return [Math.sin(rad), Math.cos(rad)];
+        return [Math.pow(Math.sin(rad), 3), 
+            -(15 * Math.cos(rad) - 5 * 
+            Math.cos(2 * rad) - 2 * 
+            Math.cos(3 * rad) - Math.cos(4 * rad))];
+    };
+    var scaleAndTranslate = function (pos, sx, sy, dx, dy) {
+        return [dx + pos[0] * sx, dy + pos[1] * sy];
+    };
+
+    window.addEventListener('resize', function () {
+        width = canvas.width = koef * innerWidth;
+        height = canvas.height = koef * innerHeight;
+        ctx.fillStyle = "rgba(0,0,0,1)";
+        ctx.fillRect(0, 0, width, height);
+    });
+
+    var traceCount = mobile ? 35 : 50;
+    var pointsOrigin = [];
+    var i;
+    var dr = mobile ? 0.2 : 0.1;
+    for (i = 0; i < Math.PI * 2; i += dr) 
+    pointsOrigin.push(scaleAndTranslate(heartPosition(i), 210, 13, 0, 0));
+    for (i = 0; i < Math.PI * 2; i += dr) 
+    pointsOrigin.push(scaleAndTranslate(heartPosition(i), 150, 9, 0, 0));
+    for (i = 0; i < Math.PI * 2; i += dr) 
+    pointsOrigin.push(scaleAndTranslate(heartPosition(i), 90, 5, 0, 0));
+    var heartPointsCount = pointsOrigin.length;
+
+    var targetPoints = [];
+    var pulse = function (kx, ky) {
+        for (i = 0; i < pointsOrigin.length; i++) {
+            targetPoints[i] = [];
+            targetPoints[i][0] = kx * pointsOrigin[i][0] + width / 2;
+            targetPoints[i][1] = ky * pointsOrigin[i][1] + height / 2;
+        }
+    };
+
+    var e = [];
+    for (i = 0; i < heartPointsCount; i++) {
+        var x = rand() * width;
+        var y = rand() * height;
+        var colorChoice = rand() > 0.95 ? "rgba(255, 255, 255, 0.8)" : rand() > 0.96 ? "rgba(255, 100, 100, 0.9)" : "hsla(" + ~~(rand() * 30) + "," + ~~(50 * rand() + 70) + "%," + ~~(30 * rand() + 45) + "%,.6)";
+        e[i] = {
+            vx: 0,
+            vy: 0,
+            R: mobile ? 3 : 2,
+            speed: rand() + 5,
+            q: ~~(rand() * heartPointsCount),
+            D: 2 * (i % 2) - 1,
+            force: 0.2 * rand() + 0.7,
+            f: colorChoice,
+            trace: []
+        };
+        for (var k = 0; k < traceCount; k++) e[i].trace[k] = {x: x, y: y};
+    }
+
+    var config = {
+        traceK: 0.4,
+        timeDelta: 0.01
+    };
+
+    var time = 0;
+    var loop = function () {
+        var n = -Math.cos(time);
+        pulse((1 + n) * .5, (1 + n) * .5);
+        time += ((Math.sin(time)) < 0 ? 9 : (n > 0.8) ? .2 : 1) * config.timeDelta;
+        ctx.fillStyle = mobile ? "rgba(0,0,0,.05)" : "rgba(0,0,0,.1)";
+        ctx.fillRect(0, 0, width, height);
+        for (i = e.length; i--;) {
+            var u = e[i];
+            var q = targetPoints[u.q];
+            var dx = u.trace[0].x - q[0];
+            var dy = u.trace[0].y - q[1];
+            var length = Math.sqrt(dx * dx + dy * dy);
+            if (10 > length) {
+                if (0.95 < rand()) {
+                    u.q = ~~(rand() * heartPointsCount);
+                }
+                else {
+                    if (0.99 < rand()) {
+                        u.D *= -1;
+                    }
+                    u.q += u.D;
+                    u.q %= heartPointsCount;
+                    if (0 > u.q) {
+                        u.q += heartPointsCount;
+                    }
+                }
+            }
+            u.vx += -dx / length * u.speed;
+            u.vy += -dy / length * u.speed;
+            u.trace[0].x += u.vx;
+            u.trace[0].y += u.vy;
+            u.vx *= u.force;
+            u.vy *= u.force;
+            for (k = 0; k < u.trace.length - 1;) {
+                var T = u.trace[k];
+                var N = u.trace[++k];
+                N.x -= config.traceK * (N.x - T.x);
+                N.y -= config.traceK * (N.y - T.y);
+            }
+            ctx.fillStyle = u.f;
+            for (k = 0; k < u.trace.length; k++) {
+                var size = mobile ? 2 : 1;
+                ctx.fillRect(u.trace[k].x, u.trace[k].y, size, size);
+            }
+        }
+
+        window.requestAnimationFrame(loop, canvas);
+    };
+    loop();
+    };
+
+    var s = document.readyState;
+    if (s === 'complete' || s === 'loaded' || s === 'interactive') init();
+    else document.addEventListener('DOMContentLoaded', init, false);
+
+    // Function to create rose flower animation with vase
+    function hibiscusAnimation() {
+        // Clear the page content and set styles
+        document.body.innerHTML = '';
+        document.body.style.height = '100%';
+        document.body.style.width = '100%';
+        document.body.style.background = '#122139';
+        document.body.style.overflow = 'hidden';
+        document.body.style.margin = '0';
+        document.body.style.padding = '0';
+
+        // Create and add all the CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            html, body {
+            height: 100%;
+            width: 100%;
+            background: #122139;
+            overflow: hidden;
+            }
+
+            .container {
+            width: 100px;
+            height: 300px;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            -moz-transform: scale(1.3);
+            -ms-transform: scale(1.3);
+            -webkit-transform: scale(1.3);
+            transform: scale(1.3);
+            }
+            .container div {
+            position: absolute;
+            }
+            .container .glass {
+            height: 420px;
+            width: 250px;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            -moz-border-radius: 300px 300px 0px 0px;
+            -webkit-border-radius: 300px;
+            border-radius: 300px 300px 0px 0px;
+            left: -80px;
+            top: -100px;
+            border-bottom: 15px solid rgba(255, 255, 255, 0.5);
+            }
+            .container .glass:after {
+            width: 8px;
+            background: rgba(255, 255, 255, 0.28);
+            content: '';
+            position: absolute;
+            height: 80px;
+            top: 430px;
+            border-radius: 100px;
+            left: 10px;
+            top: 180px;
+            }
+            .container .glass:before {
+            width: 8px;
+            background: rgba(255, 255, 255, 0.28);
+            content: '';
+            position: absolute;
+            height: 15px;
+            top: 430px;
+            border-radius: 100px;
+            left: 10px;
+            top: 280px;
+            }
+            .container .glow {
+            position: absolute;
+            width: 170px;
+            height: 170px;
+            -moz-border-radius: 100%;
+            -webkit-border-radius: 100%;
+            border-radius: 100%;
+            border: 1px solid rgba(245, 148, 184, 0.47);
+            box-shadow: 0px 0px 10px #f594b8;
+            left: -40px;
+            top: -40px;
+            -moz-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            -webkit-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+            -moz-animation: glowing 2.5s ease-in-out infinite;
+            -webkit-animation: glowing 2.5s ease-in-out infinite;
+            animation: glowing 2.5s ease-in-out infinite;
+            }
+            .container .rose-petals > div {
+            background: #d52d58;
+            width: 45px;
+            height: 80px;
+            position: absolute;
+            -moz-transition: all 0.5s ease-out;
+            -o-transition: all 0.5s ease-out;
+            -webkit-transition: all 0.5s ease-out;
+            transition: all 0.5s ease-out;
+            }
+            .container .rose-petals > div:nth-child(1) {
+            border-radius: 15px;
+            left: 20px;
+            top: -6px;
+            background: #d52d58;
+            }
+            .container .rose-petals > div:nth-child(2), .container .rose-petals > div:nth-child(4), .container .rose-petals > div:nth-child(6) {
+            border-radius: 0px 30px 0px 30px;
+            background: #b81b43;
+            left: 0;
+            transform-origin: bottom right;
+            }
+            .container .rose-petals > div:nth-child(3), .container .rose-petals > div:nth-child(5), .container .rose-petals > div:nth-child(7) {
+            border-radius: 30px 0px 30px 0px;
+            left: 40px;
+            transform-origin: bottom left;
+            }
+            .container .rose-petals > div:nth-child(2) {
+            -moz-animation: openRose2 3s ease-in-out;
+            -webkit-animation: openRose2 3s ease-in-out;
+            animation: openRose2 3s ease-in-out;
+            -moz-animation-fill-mode: forwards;
+            -webkit-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
+            z-index: 5;
+            background: #9e183a;
+            top: 10px;
+            height: 70px;
+            -moz-animation-delay: 2s;
+            -webkit-animation-delay: 2s;
+            animation-delay: 2s;
+            }
+            .container .rose-petals > div:nth-child(3) {
+            -moz-animation: openRose3 3s ease-in-out;
+            -webkit-animation: openRose3 3s ease-in-out;
+            animation: openRose3 3s ease-in-out;
+            -moz-animation-fill-mode: forwards;
+            -webkit-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
+            z-index: 4;
+            background: #9e183a;
+            top: 10px;
+            height: 70px;
+            -moz-animation-delay: 2s;
+            -webkit-animation-delay: 2s;
+            animation-delay: 2s;
+            }
+            .container .rose-petals > div:nth-child(4) {
+            -moz-animation: openRose4 3s ease-in-out;
+            -webkit-animation: openRose4 3s ease-in-out;
+            animation: openRose4 3s ease-in-out;
+            -moz-animation-fill-mode: forwards;
+            -webkit-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
+            z-index: 3;
+            background: #b81b43;
+            top: 5px;
+            height: 75px;
+            -moz-animation-delay: 2s;
+            -webkit-animation-delay: 2s;
+            animation-delay: 2s;
+            }
+            .container .rose-petals > div:nth-child(5) {
+            -moz-animation: openRose5 3s ease-in-out;
+            -webkit-animation: openRose5 3s ease-in-out;
+            animation: openRose5 3s ease-in-out;
+            -moz-animation-fill-mode: forwards;
+            -webkit-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
+            z-index: 2;
+            background: #b81b43;
+            top: 5px;
+            height: 75px;
+            -moz-animation-delay: 2s;
+            -webkit-animation-delay: 2s;
+            animation-delay: 2s;
+            }
+            .container .rose-petals > div:nth-child(6) {
+            -moz-animation: openRose6 3s ease-in-out;
+            -webkit-animation: openRose6 3s ease-in-out;
+            animation: openRose6 3s ease-in-out;
+            -moz-animation-fill-mode: forwards;
+            -webkit-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
+            z-index: 1;
+            background: #c9204b;
+            top: "";
+            height: "";
+            -moz-animation-delay: 2s;
+            -webkit-animation-delay: 2s;
+            animation-delay: 2s;
+            }
+            .container .rose-petals > div:nth-child(7) {
+            -moz-animation: openRose7 3s ease-in-out;
+            -webkit-animation: openRose7 3s ease-in-out;
+            animation: openRose7 3s ease-in-out;
+            -moz-animation-fill-mode: forwards;
+            -webkit-animation-fill-mode: forwards;
+            animation-fill-mode: forwards;
+            z-index: 0;
+            background: #c9204b;
+            top: "";
+            height: "";
+            -moz-animation-delay: 2s;
+            -webkit-animation-delay: 2s;
+            animation-delay: 2s;
+            }
+            .container .rose-leaves > div:nth-last-child(1) {
+            width: 55px;
+            height: 30px;
+            background: #338f37;
+            position: absolute;
+            top: 60px;
+            left: 15px;
+            -moz-border-radius: 100px;
+            -webkit-border-radius: 100px;
+            border-radius: 100px;
+            }
+            .container .rose-leaves > div:nth-child(1) {
+            width: 6px;
+            height: 230px;
+            border: none;
+            top: 80px;
+            background: #066406;
+            left: 40px;
+            }
+            .container .thorns > div {
+            width: 30px;
+            height: 30px;
+            background: #066406;
+            top: 100px;
+            left: 10px;
+            }
+            .container .thorns > div:after {
+            width: 41px;
+            height: 31px;
+            -moz-border-radius: 100%;
+            -webkit-border-radius: 100%;
+            border-radius: 100%;
+            background: #122139;
+            content: "";
+            position: absolute;
+            left: -12px;
+            top: 17px;
+            }
+            .container .thorns > div:before {
+            width: 41px;
+            height: 31px;
+            -moz-border-radius: 100%;
+            -webkit-border-radius: 100%;
+            border-radius: 100%;
+            background: #122139;
+            content: "";
+            position: absolute;
+            left: -11px;
+            top: -11px;
+            z-index: 0;
+            }
+            .container .thorns > div:nth-child(2) {
+            top: 150px;
+            -moz-transform: rotate(180deg);
+            -ms-transform: rotate(180deg);
+            -webkit-transform: rotate(180deg);
+            transform: rotate(180deg);
+            left: 45px;
+            }
+            .container .thorns > div:nth-child(3) {
+            top: 180px;
+            }
+            .container .thorns > div:nth-child(4) {
+            top: 220px;
+            -moz-transform: rotate(180deg);
+            -ms-transform: rotate(180deg);
+            -webkit-transform: rotate(180deg);
+            transform: rotate(180deg);
+            left: 45px;
+            }
+            .container .sparkles {
+            bottom: -40px;
+            }
+            .container .sparkles > div {
+            width: 4px;
+            height: 4px;
+            border-radius: 100px;
+            background: #ff96c0;
+            box-shadow: 0px 0px 12px 2px #ff4e85;
+            bottom: 0;
+            opacity: 0;
+            -moz-animation: sparkle 4s ease-in-out infinite;
+            -webkit-animation: sparkle 4s ease-in-out infinite;
+            animation: sparkle 4s ease-in-out infinite;
+            }
+            .container .sparkles > div:nth-child(1) {
+            left: 60px;
+            -moz-animation-delay: 3s;
+            -webkit-animation-delay: 3s;
+            animation-delay: 3s;
+            }
+            .container .sparkles > div:nth-child(2) {
+            left: 158px;
+            -moz-animation-delay: 2s;
+            -webkit-animation-delay: 2s;
+            animation-delay: 2s;
+            }
+            .container .sparkles > div:nth-child(3) {
+            left: -22px;
+            -moz-animation-delay: 1s;
+            -webkit-animation-delay: 1s;
+            animation-delay: 1s;
+            }
+            .container .sparkles > div:nth-child(4) {
+            left: 10px;
+            -moz-animation-delay: 1s;
+            -webkit-animation-delay: 1s;
+            animation-delay: 1s;
+            }
+            .container .sparkles > div:nth-child(5) {
+            left: 177px;
+            -moz-animation-delay: 3s;
+            -webkit-animation-delay: 3s;
+            animation-delay: 3s;
+            }
+            .container .sparkles > div:nth-child(6) {
+            left: -82px;
+            -moz-animation-delay: 2s;
+            -webkit-animation-delay: 2s;
+            animation-delay: 2s;
+            }
+            .container .sparkles > div:nth-child(7) {
+            left: 45px;
+            -moz-animation-delay: 3s;
+            -webkit-animation-delay: 3s;
+            animation-delay: 3s;
+            }
+            .container .sparkles > div:nth-child(8) {
+            left: 74px;
+            -moz-animation-delay: 3s;
+            -webkit-animation-delay: 3s;
+            animation-delay: 3s;
+            }
+            .container .sparkles > div:nth-child(9) {
+            left: -79px;
+            -moz-animation-delay: 2s;
+            -webkit-animation-delay: 2s;
+            animation-delay: 2s;
+            }
+
+            @-webkit-keyframes $animationName {
+            50% {
+                opacity: 1;
+            }
+            100% {
+                bottom: 250px;
+            }
+            }
+            @-moz-keyframes sparkle {
+            50% {
+                opacity: 1;
+            }
+            100% {
+                bottom: 250px;
+            }
+            }
+            @-ms-keyframes sparkle {
+            50% {
+                opacity: 1;
+            }
+            100% {
+                bottom: 250px;
+            }
+            }
+            @keyframes sparkle {
+            50% {
+                opacity: 1;
+            }
+            100% {
+                bottom: 250px;
+            }
+            }
+            @-webkit-keyframes $animationName {
+            50% {
+                -moz-transform: rotate(-90deg);
+                -ms-transform: rotate(-90deg);
+                -webkit-transform: rotate(-90deg);
+                transform: rotate(-90deg);
+                top: 80px;
+                left: 100px;
+            }
+            100% {
+                -moz-transform: rotate(-60deg);
+                -ms-transform: rotate(-60deg);
+                -webkit-transform: rotate(-60deg);
+                transform: rotate(-60deg);
+                top: 210px;
+                left: -30px;
+            }
+            }
+            @-moz-keyframes openRose2 {
+            50% {
+                -moz-transform: rotate(-90deg);
+                -ms-transform: rotate(-90deg);
+                -webkit-transform: rotate(-90deg);
+                transform: rotate(-90deg);
+                top: 80px;
+                left: 100px;
+            }
+            100% {
+                -moz-transform: rotate(-60deg);
+                -ms-transform: rotate(-60deg);
+                -webkit-transform: rotate(-60deg);
+                transform: rotate(-60deg);
+                top: 210px;
+                left: -30px;
+            }
+            }
+            @-ms-keyframes openRose2 {
+            50% {
+                -moz-transform: rotate(-90deg);
+                -ms-transform: rotate(-90deg);
+                -webkit-transform: rotate(-90deg);
+                transform: rotate(-90deg);
+                top: 80px;
+                left: 100px;
+            }
+            100% {
+                -moz-transform: rotate(-60deg);
+                -ms-transform: rotate(-60deg);
+                -webkit-transform: rotate(-60deg);
+                transform: rotate(-60deg);
+                top: 210px;
+                left: -30px;
+            }
+            }
+            @keyframes openRose2 {
+            50% {
+                -moz-transform: rotate(-90deg);
+                -ms-transform: rotate(-90deg);
+                -webkit-transform: rotate(-90deg);
+                transform: rotate(-90deg);
+                top: 80px;
+                left: 100px;
+            }
+            100% {
+                -moz-transform: rotate(-60deg);
+                -ms-transform: rotate(-60deg);
+                -webkit-transform: rotate(-60deg);
+                transform: rotate(-60deg);
+                top: 210px;
+                left: -30px;
+            }
+            }
+            @-webkit-keyframes $animationName {
+            100% {
+                -moz-transform: rotate(60deg);
+                -ms-transform: rotate(60deg);
+                -webkit-transform: rotate(60deg);
+                transform: rotate(60deg);
+            }
+            }
+            @-moz-keyframes openRose3 {
+            100% {
+                -moz-transform: rotate(60deg);
+                -ms-transform: rotate(60deg);
+                -webkit-transform: rotate(60deg);
+                transform: rotate(60deg);
+            }
+            }
+            @-ms-keyframes openRose3 {
+            100% {
+                -moz-transform: rotate(60deg);
+                -ms-transform: rotate(60deg);
+                -webkit-transform: rotate(60deg);
+                transform: rotate(60deg);
+            }
+            }
+            @keyframes openRose3 {
+            100% {
+                -moz-transform: rotate(60deg);
+                -ms-transform: rotate(60deg);
+                -webkit-transform: rotate(60deg);
+                transform: rotate(60deg);
+            }
+            }
+            @-webkit-keyframes $animationName {
+            100% {
+                -moz-transform: rotate(-30deg);
+                -ms-transform: rotate(-30deg);
+                -webkit-transform: rotate(-30deg);
+                transform: rotate(-30deg);
+            }
+            }
+            @-moz-keyframes openRose4 {
+            100% {
+                -moz-transform: rotate(-30deg);
+                -ms-transform: rotate(-30deg);
+                -webkit-transform: rotate(-30deg);
+                transform: rotate(-30deg);
+            }
+            }
+            @-ms-keyframes openRose4 {
+            100% {
+                -moz-transform: rotate(-30deg);
+                -ms-transform: rotate(-30deg);
+                -webkit-transform: rotate(-30deg);
+                transform: rotate(-30deg);
+            }
+            }
+            @keyframes openRose4 {
+            100% {
+                -moz-transform: rotate(-30deg);
+                -ms-transform: rotate(-30deg);
+                -webkit-transform: rotate(-30deg);
+                transform: rotate(-30deg);
+            }
+            }
+            @-webkit-keyframes $animationName {
+            100% {
+                -moz-transform: rotate(30deg);
+                -ms-transform: rotate(30deg);
+                -webkit-transform: rotate(30deg);
+                transform: rotate(30deg);
+            }
+            }
+            @-moz-keyframes openRose5 {
+            100% {
+                -moz-transform: rotate(30deg);
+                -ms-transform: rotate(30deg);
+                -webkit-transform: rotate(30deg);
+                transform: rotate(30deg);
+            }
+            }
+            @-ms-keyframes openRose5 {
+            100% {
+                -moz-transform: rotate(30deg);
+                -ms-transform: rotate(30deg);
+                -webkit-transform: rotate(30deg);
+                transform: rotate(30deg);
+            }
+            }
+            @keyframes openRose5 {
+            100% {
+                -moz-transform: rotate(30deg);
+                -ms-transform: rotate(30deg);
+                -webkit-transform: rotate(30deg);
+                transform: rotate(30deg);
+            }
+            }
+            @-webkit-keyframes $animationName {
+            50% {
+                box-shadow: 0px 0px 60px #f594b8;
+            }
+            }
+            @-moz-keyframes glowing {
+            50% {
+                box-shadow: 0px 0px 60px #f594b8;
+            }
+            }
+            @-ms-keyframes glowing {
+            50% {
+                box-shadow: 0px 0px 60px #f594b8;
+            }
+            }
+            @keyframes glowing {
+            50% {
+                box-shadow: 0px 0px 60px #f594b8;
+            }
+            }
+
+        `;
+        document.head.appendChild(style);
+        // Ensure petals bloom but don't fall — override the falling animations
+        style.textContent += `
+            @keyframes openRose2 {
+                50% { transform: rotate(-90deg); }
+                100% { transform: rotate(-60deg); }
+            }
+            @keyframes openRose6 {
+                100% { transform: rotate(0deg); }
+            }
+            @keyframes openRose7 {
+                100% { transform: rotate(0deg); }
+            }
+            .container .grass {
+                position: absolute;
+                bottom: -50px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 400px;
+                height: 80px;
+                background: linear-gradient(to top, #2d5016 0%, #4a8c2e 50%, #6ba639 100%);
+                clip-path: polygon(0% 100%, 1% 75%, 2% 95%, 3% 70%, 4% 92%, 5% 65%, 6% 88%, 7% 72%, 8% 90%, 9% 68%, 10% 86%, 11% 75%, 12% 89%, 13% 70%, 14% 87%, 15% 78%, 16% 85%, 17% 72%, 18% 88%, 19% 75%, 20% 86%, 21% 73%, 22% 89%, 23% 71%, 24% 87%, 25% 76%, 26% 84%, 27% 70%, 28% 88%, 29% 74%, 30% 86%, 31% 72%, 32% 89%, 33% 75%, 34% 87%, 35% 70%, 36% 85%, 37% 77%, 38% 88%, 39% 71%, 40% 86%, 41% 75%, 42% 89%, 43% 72%, 44% 87%, 45% 76%, 46% 84%, 47% 70%, 48% 88%, 49% 74%, 50% 86%, 51% 72%, 52% 89%, 53% 75%, 54% 87%, 55% 70%, 56% 85%, 57% 77%, 58% 88%, 59% 71%, 60% 86%, 61% 75%, 62% 89%, 63% 72%, 64% 87%, 65% 76%, 66% 84%, 67% 70%, 68% 88%, 69% 74%, 70% 86%, 71% 72%, 72% 89%, 73% 75%, 74% 87%, 75% 70%, 76% 85%, 77% 77%, 78% 88%, 79% 71%, 80% 86%, 81% 75%, 82% 89%, 83% 72%, 84% 87%, 85% 76%, 86% 84%, 87% 70%, 88% 88%, 89% 74%, 90% 86%, 91% 72%, 92% 89%, 93% 75%, 94% 87%, 95% 70%, 96% 85%, 97% 77%, 98% 88%, 99% 71%, 100% 100%);
+                opacity: 0.95;
+                box-shadow: 
+                    0 -5px 15px rgba(0, 0, 0, 0.3),
+                    inset 0 10px 20px rgba(0, 0, 0, 0.2),
+                    0 2px 4px rgba(0, 0, 0, 0.5);
+                animation: grassSway 4s ease-in-out infinite;
+            }
+            @keyframes grassSway {
+                0%, 100% { transform: translateX(-50%) skewX(0deg); }
+                50% { transform: translateX(-50%) skewX(1deg); }
+            }
+            .container .grass:before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 40%;
+                background: linear-gradient(to bottom, rgba(76, 110, 40, 0.3), transparent);
+                clip-path: polygon(0% 100%, 2% 60%, 4% 80%, 6% 55%, 8% 75%, 10% 50%, 12% 72%, 14% 55%, 16% 70%, 18% 52%, 20% 68%, 22% 58%, 24% 65%, 26% 50%, 28% 63%, 30% 60%, 32% 60%, 34% 48%, 36% 58%, 38% 55%, 40% 56%, 42% 50%, 44% 55%, 46% 52%, 48% 54%, 50% 50%, 52% 54%, 54% 52%, 56% 55%, 58% 50%, 60% 56%, 62% 55%, 64% 58%, 66% 48%, 68% 60%, 70% 60%, 72% 63%, 74% 50%, 76% 65%, 78% 58%, 80% 68%, 82% 52%, 84% 70%, 86% 55%, 88% 72%, 90% 50%, 92% 75%, 94% 55%, 96% 80%, 98% 60%, 100% 100%);
+            }
+            
+            .phrase {
+                width: 380px;
+                font-size: 15px;
+                font-family: 'Dancing Script', cursive;
+                color: white;
+                position: absolute;
+                left: -140px;
+                bottom: -110px;
+                opacity: 0;
+                animation-fill-mode: forwards;
+                -webkit-animation: fadeIn linear 6s;
+                -moz-animation: fadeIn linear 6s;
+                -o-animation: fadeIn linear 6s;
+                -ms-animation: fadeIn linear 6s;
+                animation-delay: 1s;
+                }
+
+                @keyframes fadeIn {
+                0% {opacity:0;}
+                40% {opacity:1;}
+                100% {opacity:0;}
+                }
+
+                @-moz-keyframes fadeIn {
+                0% {opacity:0;}
+                40% {opacity:1;}
+                100% {opacity:0;}
+                }
+
+                @-webkit-keyframes fadeIn {
+                0% {opacity:0;}
+                40% {opacity:1;}
+                100% {opacity:0;}
+                }
+
+                @-o-keyframes fadeIn {
+                0% {opacity:0;}
+                40% {opacity:1;}
+                100% {opacity:0;}
+                }
+
+                @-ms-keyframes fadeIn {
+                0% {opacity:0;}
+                40% {opacity:1;}
+                100% {opacity:0;}
+                }
+        `;
+
+        // Create the container HTML structure
+        const container = document.createElement('div');
+        container.className = 'container';
+        
+        container.innerHTML = `
+            <div class="glass"></div>
+            <div class="grass"></div>
+            <div class="thorns">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="glow"></div>
+            <div class="rose-leaves">
+                <div></div>
+                <div></div>
+            </div>
+            <div class="rose-petals">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="sparkles">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <center>
+                <div class="phrase">
+                    <center>I can't promise forever, but I know what I feel for you is real 🥰. (Nag-english hehe)</center>
+                    <center>I love you ❤️</center>
+                </div>
+            </center> 
+        `;
+
+        document.body.appendChild(container);
+    }
+
+    // Add click event listener to myButton
+    document.getElementById('myButton').addEventListener('click', hibiscusAnimation);
+</script>
